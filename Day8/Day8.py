@@ -21,7 +21,7 @@ for i in range(height):
             antennas_cords[frequency] = antennas_cords[frequency] + [(i, j)] if frequency in antennas_cords else [
                 (i, j)]
 
-antidote_cord_set = set()
+antinodes_cord_set = set()
 for antenna in antennas_cords:
     positions = antennas_cords[antenna]
     if len(positions) >= 2:
@@ -34,31 +34,31 @@ for antenna in antennas_cords:
 
                 # part 1
                 # if cord_in_map(pos1y + delta_y, pos1x + delta_x):
-                #     antidote_cord_set.add((pos1y + delta_y, pos1x + delta_x))
+                #     antinodes_cord_set.add((pos1y + delta_y, pos1x + delta_x))
                 # if cord_in_map(pos2y - delta_y, pos2x - delta_x):
-                #     antidote_cord_set.add((pos2y - delta_y, pos2x - delta_x))
+                #     antinodes_cord_set.add((pos2y - delta_y, pos2x - delta_x))
 
                 # part 2
                 iterator = 0
                 while True:
-                    antidote_y = pos1y + delta_y * iterator
-                    antidote_x = pos1x + delta_x * iterator
+                    antinode_y = pos1y + delta_y * iterator
+                    antinode_x = pos1x + delta_x * iterator
                     iterator += 1
 
-                    if cord_in_map(antidote_y, antidote_x):
-                        antidote_cord_set.add((antidote_y, antidote_x))
+                    if cord_in_map(antinode_y, antinode_x):
+                        antinodes_cord_set.add((antinode_y, antinode_x))
                     else:
                         break
 
                 iterator = 0
                 while True:
-                    antidote_y = pos2y - delta_y * iterator
-                    antidote_x = pos2x - delta_x * iterator
+                    antinode_y = pos2y - delta_y * iterator
+                    antinode_x = pos2x - delta_x * iterator
                     iterator += 1
 
-                    if cord_in_map(antidote_y, antidote_x):
-                        antidote_cord_set.add((antidote_y, antidote_x))
+                    if cord_in_map(antinode_y, antinode_x):
+                        antinodes_cord_set.add((antinode_y, antinode_x))
                     else:
                         break
 
-print(len(antidote_cord_set))
+print(len(antinodes_cord_set))
