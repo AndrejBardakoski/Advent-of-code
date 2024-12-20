@@ -1,4 +1,5 @@
 import queue
+import time
 
 input_map = []
 
@@ -17,12 +18,13 @@ for y in range(HEIGHT):
             end_y, end_x = end = y, x
 
 directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+nodes = {}
 
 
 def bfs():
     q = queue.Queue()
     q.put((start, 0))
-    visited = {start}
+    nodes[start] = 0
 
     while not q.empty():
         node, dist = q.get()
@@ -30,55 +32,43 @@ def bfs():
         input_map[y][x] = dist
         for dy, dx in directions:
             neighbor_y, neighbor_x = neighbor = (y + dy, x + dx)
-            if neighbor not in visited and input_map[neighbor_y][neighbor_x] != "#":
+            if neighbor not in nodes and input_map[neighbor_y][neighbor_x] != "#":
                 q.put((neighbor, dist + 1))
-                visited.add(neighbor)
+                nodes[neighbor] = dist
 
 
-cheats = {}
 # MAX_CHEAT_LENGTH = 2  # part 1
 MAX_CHEAT_LENGTH = 20  # part 2
 
 
-def find_cheats(node, dist):
+def find_cheats_from_node(node, dist):
     y, x = node
+    n_cheats = 0
     for dy in range(-MAX_CHEAT_LENGTH, MAX_CHEAT_LENGTH + 1):
         n_y = y + dy
         if n_y >= HEIGHT or n_y < 0:
             continue
         for dx in range(abs(dy) - MAX_CHEAT_LENGTH, MAX_CHEAT_LENGTH + 1 - abs(dy)):
             n_x = x + dx
+            n_node = (n_y, n_x)
             if n_x >= WIDTH or n_x < 0:
                 continue
-            if input_map[n_y][n_x] != "#" and input_map[n_y][n_x] != ".":
-                saved_time = input_map[n_y][n_x] - abs(dy) - abs(dx) - dist
+            if n_node in nodes:
+                n_dist = nodes[n_node]
+                saved_time = n_dist - abs(dy) - abs(dx) - dist
                 if saved_time >= 100:
-                    if saved_time in cheats:
-                        cheats[saved_time].add((node, (n_y, n_x)))
-                    else:
-                        cheats[saved_time] = {(node, (n_y, n_x))}
+                    n_cheats += 1
+    return n_cheats
 
 
-def bfs2():
+def find_all_cheats():
     bfs()
-    q = queue.Queue()
-    q.put(start)
-    visited = {start}
 
-    while not q.empty():
-        node = q.get()
-        y, x = node
-        dist = input_map[y][x]
-        find_cheats(node, dist)
-        for dy, dx in directions:
-            neighbor_y, neighbor_x = neighbor = (y + dy, x + dx)
-            if neighbor not in visited and input_map[neighbor_y][neighbor_x] != "#":
-                q.put(neighbor)
-                visited.add(neighbor)
+    total_cheats = 0
+    for node in nodes:
+        dist = nodes[node]
+        total_cheats += find_cheats_from_node(node, dist)
+    return total_cheats
 
 
-bfs2()
-count = 0
-for k in cheats:
-    count += len(cheats[k])
-print(count)
+print(find_all_cheats())
